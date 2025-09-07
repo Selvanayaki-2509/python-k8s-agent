@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Gemini + Flask demo</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    textarea { width: 100%; min-height: 140px; }
+    .result { white-space: pre-wrap; border: 1px solid #eee; padding: 1rem; margin-top: 1rem; background: #fafafa; }
+  </style>
+</head>
+<body>
+  <h1>Ask Gemini</h1>
+
+  {% if error %}
+    <div style="color: #9b0000; margin-bottom: 1rem;">{{ error }}</div>
+  {% endif %}
+
+  <form action="/ask" method="post">
+    <label for="prompt">Write your prompt:</label>
+    <textarea id="prompt" name="prompt">{{ prompt or "" }}</textarea>
+    <p><button type="submit">Send</button></p>
+  </form>
+
+  <h3>Or try AJAX (no page reload)</h3>
+  <textarea id="ajaxPrompt" placeholder="Try: write a short poem about a DevOps engineer"></textarea>
+  <p><button id="sendAjax">Send AJAX</button></p>
+  <div id="ajaxResult" class="result"></div>
+
+  {% if answer %}
+    <h2>Answer</h2>
+    <div class="result">{{ answer }}</div>
+  {% endif %}
+
+  <script>
+    document.getElementById('sendAjax').addEventListener('click', async function () {
+      const prompt = document.getElementById('ajaxPrompt').value;
+      document.getElementById('ajaxResult').textContent = "Thinking...";
+      try {
+        const res = await fetch('/api/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        document.getElementById('ajaxResult').textContent = data.answer || data.error || JSON.stringify(data);
+      } catch (err) {
+        document.getElementById('ajaxResult').textContent = "Network error: " + err;
+      }
+    });
+  </script>
+</body>
+</html>

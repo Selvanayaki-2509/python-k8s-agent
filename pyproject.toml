@@ -1,0 +1,19 @@
+[project]
+name = "gemini-flask"
+version = "0.1.0"
+description = "Flask web app using Google Gemini AI"
+authors = [
+    { name = "Your Name", email = "you@example.com" }
+]
+requires-python = ">=3.9"
+
+dependencies = [
+    "flask>=3.0.0",
+    "python-dotenv>=1.0.0",
+    "google-generativeai>=0.5.0",
+    "flask-limiter>=3.5.0"  # optional, for rate limiting
+]
+
+[tool.uv]
+# Optional: makes uv create a .venv directory
+venv = ".venv"
